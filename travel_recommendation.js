@@ -1,127 +1,173 @@
-// Search button
+// ================= BUTTONS =================
 const searchBtn = document.getElementById("searchBtn");
-
-// Reset button
 const resetBtn = document.getElementById("resetBtn");
 
-// Search input
+// ================= INPUT =================
 const searchInput = document.getElementById("searchInput");
 
-// Results container
+// ================= RESULTS =================
 const resultsContainer = document.getElementById("recommendation-results");
 
+// ================= SECTIONS =================
+const homeSection = document.getElementById("home");
+const aboutSection = document.getElementById("about");
+const contactSection = document.getElementById("contact");
+const resultsSection = document.getElementById("results-section");
 
-// Fetch JSON data
-async function fetchRecommendations() {
+// ================= VIEW CONTROLLER =================
+function showOnly(sectionToShow) {
+  const sections = [homeSection, aboutSection, contactSection, resultsSection];
 
-  try {
+  sections.forEach(section => {
+    if (section) section.classList.add("hidden");
+  });
 
-    const response = await fetch('travel_recommendation_api.json');
-
-    const data = await response.json();
-
-    console.log(data);
-
-    return data;
-
-  } catch (error) {
-
-    console.error('Error fetching data:', error);
-
-  }
-
+  if (sectionToShow) sectionToShow.classList.remove("hidden");
 }
 
+// ================= INITIAL STATE =================
+showOnly(homeSection);
 
-// Display recommendations
+// ================= NAVIGATION (SAFE BINDING) =================
+document.addEventListener("DOMContentLoaded", () => {
+
+  const homeLink = document.querySelector('a[href="#home"]');
+  const aboutLink = document.querySelector('a[href="#about"]');
+  const contactLink = document.querySelector('a[href="#contact"]');
+
+  if (homeLink) {
+    homeLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      showOnly(homeSection);
+    });
+  }
+
+  if (aboutLink) {
+    aboutLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      showOnly(aboutSection);
+    });
+  }
+
+  if (contactLink) {
+    contactLink.addEventListener("click", (e) => {
+      e.preventDefault();
+      showOnly(contactSection);
+    });
+  }
+
+});
+
+// ================= FETCH DATA =================
+async function fetchRecommendations() {
+  try {
+    const response = await fetch("travel_recommendation_api.json");
+    return await response.json();
+  } catch (error) {
+    console.error("Error fetching data:", error);
+    return null;
+  }
+}
+
+// ================= LOCAL TIME =================
+function getLocalTime(timeZone) {
+  const options = {
+    timeZone,
+    hour12: true,
+    hour: "numeric",
+    minute: "numeric",
+    second: "numeric"
+  };
+
+  return new Date().toLocaleTimeString("en-US", options);
+}
+
+// ================= DISPLAY RESULTS =================
 function displayResults(results) {
 
   resultsContainer.innerHTML = "";
 
-  results.forEach(item => {
+  if (!results || results.length === 0) {
+    resultsContainer.innerHTML = `<h2>No recommendations found.</h2>`;
+    return;
+  }
 
+  results.forEach(item => {
     const resultHTML = `
       <div class="result-card">
-
         <img src="${item.imageUrl}" alt="${item.name}">
-
-        <h3>${item.name}</h3>
-
-        <p>${item.description}</p>
-
+        <div class="card-content">
+          <h3>${item.name}</h3>
+          <p>${item.description}</p>
+          ${item.time ? `<p class="time">Local Time: ${item.time}</p>` : ""}
+        </div>
       </div>
     `;
 
     resultsContainer.innerHTML += resultHTML;
-
   });
-
 }
 
+// ================= SEARCH =================
+searchBtn.addEventListener("click", async () => {
 
-// Search functionality
-// Search button
-searchBtn.addEventListener('click', async () => {
+  const keyword = searchInput.value.toLowerCase().trim();
+  const data = await fetchRecommendations();
 
-    // Convert input to lowercase
-    let keyword = searchInput.value.toLowerCase().trim();
+  if (!data) return;
+
+  let matchedResults = [];
+
+  if (keyword === "beach" || keyword === "beaches") {
+    matchedResults = data.beaches;
+  }
+
+  else if (keyword === "temple" || keyword === "temples") {
+    matchedResults = data.temples;
+  }
   
-    // Fetch JSON data
-    const data = await fetchRecommendations();
+  else {
+
+    const seen = new Set();
   
-    let matchedResults = [];
+    data.countries.forEach(country => {
   
-    // Handle keyword variations
-    if (keyword === "beach" || keyword === "beaches") {
+      const countryMatch =
+        country.name.toLowerCase().includes(keyword);
   
-      matchedResults = data.beaches;
+      country.cities.forEach(city => {
   
-    }
+        const cityMatch =
+          city.name.toLowerCase().includes(keyword);
   
-    else if (keyword === "temple" || keyword === "temples") {
+        if (countryMatch || cityMatch) {
   
-      matchedResults = data.temples;
+          const key = city.name;
   
-    }
+          if (!seen.has(key)) {
+            seen.add(key);
   
-    else {
-  
-      // Search countries and cities
-      data.countries.forEach(country => {
-  
-        // Match country names
-        if (country.name.toLowerCase().includes(keyword)) {
-  
-          matchedResults.push(...country.cities);
-  
-        }
-  
-        // Match city names
-        country.cities.forEach(city => {
-  
-          if (city.name.toLowerCase().includes(keyword)) {
-  
-            matchedResults.push(city);
-  
+            matchedResults.push({
+              ...city,
+              time: getLocalTime(country.timeZone)
+            });
           }
-  
-        });
-  
+        }
       });
   
-    }
+    });
   
-    // Display results
-    displayResults(matchedResults);
-  
-  });
+  }
+  showOnly(resultsSection);
+  displayResults(matchedResults);
 
+  resultsSection.scrollIntoView({ behavior: "smooth" });
+});
 
-// Reset functionality
-resetBtn.addEventListener('click', () => {
-
+// ================= RESET =================
+resetBtn.addEventListener("click", () => {
   searchInput.value = "";
-
   resultsContainer.innerHTML = "";
-
+  showOnly(homeSection);
+  homeSection.scrollIntoView({ behavior: "smooth" });
 });

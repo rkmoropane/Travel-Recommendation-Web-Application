@@ -15,15 +15,15 @@
     <nav class="navbar">
         <!-- Brand section (Logo + Website Name) -->
         <div class="brand">
-          <img src="logo.png" alt="Travel Explorer Logo" class="logo" />
+          <img src="travel-explorer-logo.jpg" alt="Travel Explorer Logo" class="logo" />
           <span class="brand-name">Travel Explorer</span>
         </div>
       
         <!-- Navigation Links -->
         <div class="nav-links">
-          <a href="index.html">Home</a>
-          <a href="about.html">About Us</a>
-          <a href="contact.html">Contact Us</a>
+          <a href="#home">Home</a>
+          <a href="#about">About Us</a>
+          <a href="#contact">Contact Us</a>
         </div>
       
         <!-- Search Section -->
@@ -39,17 +39,16 @@
         </div>
       
     </nav>
-    <!-- Home Section -->
-    <section class="home">
+    <!-- Sidebar Social Media (ALWAYS VISIBLE) -->
+    <div class="sidebar-social">
+        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="#"><i class="fab fa-instagram"></i></a>
+        <a href="#"><i class="fab fa-twitter"></i></a>
+        <a href="#"><i class="fab fa-youtube"></i></a>
+    </div>
 
-        <!-- Social Media Icons -->
-        <div class="social-icons">
-            <a href="#"><i class="fab fa-facebook-f"></i></a>
-            <a href="#"><i class="fab fa-instagram"></i></a>
-            <a href="#"><i class="fab fa-twitter"></i></a>
-            <a href="#"><i class="fab fa-youtube"></i></a>
-        </div>
-    
+    <!-- Home Section -->
+    <section id="home" class="home">
         <!-- Home Content -->
         <div class="home-content">
             <h1>EXPLORE DREAM DESTINATIONS</h1>
@@ -63,11 +62,15 @@
         </div>
     
     </section>
-    <!-- Recommendation Results -->
-    <div id="recommendation-results" class="results-container"></div>
+    <!-- ================RESULTS SECTION ================== -->
+    <section id="results-section">
+        <!-- Recommendation Results -->
+        <div id="recommendation-results" class="results-container"></div>
 
-    <!-- About Section -->
-    <section class="about-section">
+    </section>
+
+    <!-- ====================== ABOUT SECTION========================== -->
+    <section id="about" class="about-section">
 
         <h1>ABOUT US</h1>
 
@@ -103,44 +106,25 @@
 
 
     <!-- Contact Section -->
-    <section class="contact-section">
+    <section id="contact" class="contact-section">
 
-        <div class="contact-container">
-
+        <div class="contact-info">
             <h1>CONTACT US</h1>
-
-            <p>
-                We'd love to hear from you! Send us a message and we will get back to you soon.
-            </p>
-
-            <!-- Contact Form -->
-            <form class="contact-form">
-
-                <input 
-                    type="text" 
-                    placeholder="Enter your name" 
-                    required
-                >
-
-                <input 
-                    type="email" 
-                    placeholder="Enter your email" 
-                    required>
-
-                <textarea 
-                    rows="6" 
-                    placeholder="Write your message here..."
-                    required></textarea>
-
-                <button type="submit">Submit</button>
-
-            </form>
-
+            <p>We'd love to hear from you! Send us a message and we will get back to you soon.</p>
         </div>
-
+    
+        <div class="contact-container">
+            <form class="contact-form">
+                <input type="text" placeholder="Enter your name" required>
+                <input type="email" placeholder="Enter your email" required>
+                <textarea rows="6" placeholder="Write your message here..." required></textarea>
+                <button type="submit">Submit</button>
+            </form>
+        </div>
+    
     </section>
 
-    <!-- JavaScript File -->
+    <!-- =========================JavaScript File ===========================-->
     <script src="travel_recommendation.js"></script>
 </body>
 </html>
