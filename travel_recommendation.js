@@ -85,84 +85,159 @@ function getLocalTime(timeZone) {
 // ================= DISPLAY RESULTS =================
 function displayResults(results) {
 
-  resultsContainer.innerHTML = "";
-
-  if (!results || results.length === 0) {
-    resultsContainer.innerHTML = `<h2>No recommendations found.</h2>`;
-    return;
-  }
-
-  results.forEach(item => {
-    const resultHTML = `
-      <div class="result-card">
-        <img src="${item.imageUrl}" alt="${item.name}">
-        <div class="card-content">
-          <h3>${item.name}</h3>
-          <p>${item.description}</p>
-          ${item.time ? `<p class="time">Local Time: ${item.time}</p>` : ""}
-        </div>
-      </div>
+    resultsContainer.innerHTML = "";
+  
+    const headingColor = "#ffb6c1"; // light pink
+  
+    if (!results || results.length === 0) {
+  
+      resultsContainer.innerHTML = `
+        <h2 style="color:${headingColor}; text-align:center;">
+          No recommendations found.
+        </h2>
+      `;
+  
+      return;
+    }
+  
+    // 🔥 Add heading FIRST
+    resultsContainer.innerHTML = `
+      <h2 style="
+        color:${headingColor};
+        text-align:center;
+        margin-bottom:20px;
+        font-size:32px;
+      ">
+        Search Results
+      </h2>
     `;
-
-    resultsContainer.innerHTML += resultHTML;
-  });
-}
+  
+    results.forEach(item => {
+  
+      const resultHTML = `
+        <div class="result-card">
+          <img src="${item.imageUrl}" alt="${item.name}">
+          <div class="card-content">
+            <h3>${item.name}</h3>
+            <p>${item.description}</p>
+            ${item.time ? `<p class="time">Local Time: ${item.time}</p>` : ""}
+          </div>
+        </div>
+      `;
+  
+      resultsContainer.innerHTML += resultHTML;
+    });
+  }
 
 // ================= SEARCH =================
 searchBtn.addEventListener("click", async () => {
 
-  const keyword = searchInput.value.toLowerCase().trim();
-  const data = await fetchRecommendations();
-
-  if (!data) return;
-
-  let matchedResults = [];
-
-  if (keyword === "beach" || keyword === "beaches") {
-    matchedResults = data.beaches;
-  }
-
-  else if (keyword === "temple" || keyword === "temples") {
-    matchedResults = data.temples;
-  }
+    const keyword = searchInput.value.toLowerCase().trim();
+    const data = await fetchRecommendations();
   
-  else {
-
+    if (!data) return;
+  
+    let matchedResults = [];
     const seen = new Set();
   
-    data.countries.forEach(country => {
+    // ================= COUNTRY → SHOW ALL =================
+    if (keyword === "country" || keyword === "countries") {
   
-      const countryMatch =
-        country.name.toLowerCase().includes(keyword);
+      data.countries.forEach(country => {
+        country.cities.forEach(city => {
   
-      country.cities.forEach(city => {
-  
-        const cityMatch =
-          city.name.toLowerCase().includes(keyword);
-  
-        if (countryMatch || cityMatch) {
-  
-          const key = city.name;
-  
-          if (!seen.has(key)) {
-            seen.add(key);
+          if (!seen.has(city.name)) {
+            seen.add(city.name);
   
             matchedResults.push({
               ...city,
               time: getLocalTime(country.timeZone)
             });
           }
-        }
+        });
       });
   
-    });
+    }
   
-  }
-  showOnly(resultsSection);
-  displayResults(matchedResults);
-
-  resultsSection.scrollIntoView({ behavior: "smooth" });
-});
+    // ================= CITY → SHOW ALL =================
+    else if (keyword === "city" || keyword === "cities") {
+  
+      data.countries.forEach(country => {
+        country.cities.forEach(city => {
+  
+          if (!seen.has(city.name)) {
+            seen.add(city.name);
+  
+            matchedResults.push({
+              ...city,
+              time: getLocalTime(country.timeZone)
+            });
+          }
+        });
+      });
+  
+    }
+  
+    // ================= BEACHES =================
+    else if (keyword === "beach" || keyword === "beaches") {
+      matchedResults = data.beaches;
+    }
+  
+    // ================= TEMPLES =================
+    else if (keyword === "temple" || keyword === "temples") {
+      matchedResults = data.temples;
+    }
+  
+    // ================= NORMAL SEARCH =================
+    else {
+  
+      data.countries.forEach(country => {
+  
+        const countryMatch =
+          country.name.toLowerCase().includes(keyword);
+  
+        const cityMatches = country.cities.filter(city =>
+          city.name.toLowerCase().includes(keyword)
+        );
+  
+        // If country matches → show ALL its cities
+        if (countryMatch) {
+          country.cities.forEach(city => {
+  
+            if (!seen.has(city.name)) {
+              seen.add(city.name);
+  
+              matchedResults.push({
+                ...city,
+                time: getLocalTime(country.timeZone)
+              });
+            }
+          });
+        }
+  
+        // If city matches → show only matched cities
+        cityMatches.forEach(city => {
+  
+          if (!seen.has(city.name)) {
+            seen.add(city.name);
+  
+            matchedResults.push({
+              ...city,
+              time: getLocalTime(country.timeZone)
+            });
+          }
+        });
+  
+      });
+    }
+  
+    // ================= UI UPDATE =================
+    showOnly(resultsSection);
+    displayResults(matchedResults);
+  
+    resultsSection.scrollIntoView({ behavior: "smooth" });
+  
+  });
 
 // ================= RESET =================
 resetBtn.addEventListener("click", () => {

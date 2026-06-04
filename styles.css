@@ -11,7 +11,7 @@ body {
     overflow-x: hidden;
     background-image: url("travel-background.jpg");
     background-repeat: no-repeat;
-    background-size: auto;
+    background-size: 100% 100%;
     background-position: center;
     background-attachment: fixed;
   }
@@ -209,6 +209,13 @@ section {
     background: transparent;
     position: relative;
     z-index: 1;
+  }
+
+.results-heading {
+    color: #ffb6c1;
+    text-align: center;
+    font-size: 32px;
+    margin-bottom: 20px;
   }
 .result-card:hover {
     transform: translateY(-5px);
