@@ -6,6 +6,10 @@
     <title>Travel Explorer</title>
 
     <link rel="stylesheet" href="styles.css">
+    <link
+        rel="stylesheet"
+        href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+    />
 </head>
 <body>
     <nav class="navbar">
@@ -34,6 +38,109 @@
           <button id="resetBtn">Reset</button>
         </div>
       
-      </nav>
+    </nav>
+    <!-- Home Section -->
+    <section class="home">
+
+        <!-- Social Media Icons -->
+        <div class="social-icons">
+            <a href="#"><i class="fab fa-facebook-f"></i></a>
+            <a href="#"><i class="fab fa-instagram"></i></a>
+            <a href="#"><i class="fab fa-twitter"></i></a>
+            <a href="#"><i class="fab fa-youtube"></i></a>
+        </div>
+    
+        <!-- Home Content -->
+        <div class="home-content">
+            <h1>EXPLORE DREAM DESTINATIONS</h1>
+        
+            <p>
+                Discover beautiful places around the world, experience new cultures,
+                and create unforgettable travel memories with Travel Explorer.
+            </p>
+        
+            <button class="book-btn">Book Now</button>
+        </div>
+    
+    </section>
+    <!-- Recommendation Results -->
+    <div id="recommendation-results" class="results-container"></div>
+
+    <!-- About Section -->
+    <section class="about-section">
+
+        <h1>ABOUT US</h1>
+
+        <p class="about-text">
+            At Travel Explorer, we believe that traveling opens doors to new cultures,
+            unforgettable experiences, and lifelong memories. Our mission is to help
+            travelers discover amazing destinations around the world with ease and confidence.
+        </p>
+
+        <h2>Our Team</h2>
+
+        <!-- Team Members -->
+        <div class="team-container">
+
+            <div class="team-card">
+                <h3>Kholofelo Moropane</h3>
+                <p>Project Manager</p>
+            </div>
+
+            <div class="team-card">
+                <h3>Sarah Johnson</h3>
+                <p>Travel Consultant</p>
+            </div>
+
+            <div class="team-card">
+                <h3>David Smith</h3>
+                <p>Marketing Specialist</p>
+            </div>
+
+        </div>
+
+    </section>
+
+
+    <!-- Contact Section -->
+    <section class="contact-section">
+
+        <div class="contact-container">
+
+            <h1>CONTACT US</h1>
+
+            <p>
+                We'd love to hear from you! Send us a message and we will get back to you soon.
+            </p>
+
+            <!-- Contact Form -->
+            <form class="contact-form">
+
+                <input 
+                    type="text" 
+                    placeholder="Enter your name" 
+                    required
+                >
+
+                <input 
+                    type="email" 
+                    placeholder="Enter your email" 
+                    required>
+
+                <textarea 
+                    rows="6" 
+                    placeholder="Write your message here..."
+                    required></textarea>
+
+                <button type="submit">Submit</button>
+
+            </form>
+
+        </div>
+
+    </section>
+
+    <!-- JavaScript File -->
+    <script src="travel_recommendation.js"></script>
 </body>
 </html>
